@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Detecta terminal disponivel e abre fusectl.
+set -euo pipefail
+
+TERMINALS=("x-terminal-emulator" "gnome-terminal" "konsole" "xfce4-terminal" "alacritty" "kitty" "xterm")
+
+for term in "${TERMINALS[@]}"; do
+    if command -v "$term" &>/dev/null; then
+        case "$term" in
+            gnome-terminal) exec "$term" -- fusectl "$@" ;;
+            konsole)        exec "$term" -e fusectl "$@" ;;
+            *)              exec "$term" -e fusectl "$@" ;;
+        esac
+    fi
+done
+
+echo "Nenhum terminal encontrado. Execute 'fusectl' diretamente no terminal."
+exit 1

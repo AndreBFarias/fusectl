@@ -1,0 +1,21 @@
+app-id: com.github.fusectl.fusectl
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+command: fusectl
+
+finish-args:
+  - --device=all
+  - --filesystem=host:ro
+  - --filesystem=/media:ro
+  - --filesystem=/mnt:ro
+  - --filesystem=/run/media:ro
+
+modules:
+  - name: fusectl
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app .
+    sources:
+      - type: dir
+        path: ../..

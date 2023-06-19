@@ -1,0 +1,30 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_build:
+	python3 -m venv debian/venv
+	debian/venv/bin/pip install --upgrade pip
+	debian/venv/bin/pip install --no-cache-dir .
+
+override_dh_auto_install:
+	mkdir -p debian/fusectl/opt/fusectl
+	cp -r debian/venv/* debian/fusectl/opt/fusectl/
+	find debian/fusectl/opt/fusectl -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null || true
+
+	mkdir -p debian/fusectl/usr/bin
+	ln -sf /opt/fusectl/bin/fusectl debian/fusectl/usr/bin/fusectl
+	install -m 755 packaging/fusectl-launcher debian/fusectl/usr/bin/fusectl-launcher
+
+	mkdir -p debian/fusectl/usr/share/fusectl/udev
+	cp udev/50-switch-rcm.rules debian/fusectl/usr/share/fusectl/udev/
+
+	mkdir -p debian/fusectl/usr/share/applications
+	cp packaging/fusectl.desktop debian/fusectl/usr/share/applications/
+
+	mkdir -p debian/fusectl/usr/share/icons/hicolor/256x256/apps
+	cp assets/logo.png debian/fusectl/usr/share/icons/hicolor/256x256/apps/fusectl.png
+
+override_dh_auto_test:
+
+override_dh_shlibdeps:
