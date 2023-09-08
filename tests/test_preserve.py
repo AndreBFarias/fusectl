@@ -66,7 +66,7 @@ def test_execute_copy_files(cnx_package: Path, sd_card: Path) -> None:
 
 
 def test_should_preserve_tinfoil_themes(cnx_package: Path, sd_card: Path) -> None:
-    """Arquivos em switch/tinfoil/themes/ sao preservados."""
+    """Arquivos em switch/tinfoil/themes/ são preservados."""
     theme = sd_card / "switch" / "tinfoil" / "themes" / "dark.json"
     theme.parent.mkdir(parents=True, exist_ok=True)
     theme.write_text('{"theme": "dark"}')

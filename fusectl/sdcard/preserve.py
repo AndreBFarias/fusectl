@@ -10,7 +10,7 @@ log = get_logger("sdcard.preserve")
 def load_preserve_list(package_dir: Path) -> set[str]:
     """Carrega lista de paths a preservar do preserve.txt + hardcoded.
 
-    Paths retornados sao relativos a raiz do SD, sem barra inicial.
+    Paths retornados são relativos à raiz do SD, sem barra inicial.
     """
     preserved: set[str] = set()
 
@@ -51,10 +51,10 @@ def _find_preserve_txt(package_dir: Path) -> Path | None:
 def should_preserve(relative_path: str, sd_root: Path, preserve_list: set[str]) -> bool:
     """Verifica se um arquivo deve ser preservado durante instalação/atualização.
 
-    Um arquivo e preservado se:
-    - Esta na lista de preservacao E ja existe no SD
-    - Pertence aos paths de tinfoil (sempre preservados) E ja existe no SD
-    - E um arquivo dentro de switch/tinfoil/themes/ E ja existe no SD
+    Um arquivo é preservado se:
+    - Está na lista de preservação E já existe no SD
+    - Pertence aos paths de tinfoil (sempre preservados) E já existe no SD
+    - É um arquivo dentro de switch/tinfoil/themes/ E já existe no SD
     """
     normalized = relative_path.lstrip("/")
 
@@ -66,16 +66,16 @@ def should_preserve(relative_path: str, sd_root: Path, preserve_list: set[str]) 
     if normalized in preserve_list:
         dest = sd_root / normalized
         if dest.exists():
-            log.debug("Preservado (ja existe): %s", normalized)
+            log.debug("Preservado (já existe): %s", normalized)
             return True
 
     return False
 
 
 def load_copy_files(package_dir: Path) -> list[tuple[str, str]]:
-    """Carrega lista de copias adicionais de copy_files.txt.
+    """Carrega lista de cópias adicionais de copy_files.txt.
 
-    Formato: /origem|/destino (paths relativos a raiz do SD).
+    Formato: /origem|/destino (paths relativos à raiz do SD).
     Retorna lista de tuplas (origem, destino) com paths normalizados.
     """
     copies: list[tuple[str, str]] = []
@@ -120,9 +120,9 @@ def _find_copy_files_txt(package_dir: Path) -> Path | None:
 
 
 def execute_copy_files(sd_root: Path, package_dir: Path) -> list[str]:
-    """Executa copias definidas em copy_files.txt.
+    """Executa cópias definidas em copy_files.txt.
 
-    Origem e relativa ao SD (pos-instalação). Destino também.
+    Origem é relativa ao SD (pós-instalação). Destino também.
     Retorna lista de erros (vazia se tudo ok).
     """
     copies = load_copy_files(package_dir)

@@ -4,6 +4,8 @@ Gerenciador Linux para Custom Firmware Nintendo Switch (Tegra X1 - Erista).
 
 Compatível com qualquer all-in-one pack de CFW (Atmosphere, Hekate, etc.).
 
+![fusectl TUI](assets/screenshot.png)
+
 ## Funcionalidades
 
 - Injeção de payload RCM via USB (CVE-2018-6242, Tegra X1 Erista)
