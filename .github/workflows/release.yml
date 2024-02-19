@@ -32,10 +32,11 @@ jobs:
           sed -i "s/fusectl (0.1.0-1)/fusectl (${VERSION})/" packaging/debian/changelog
       - run: ln -s packaging/debian debian
       - run: dpkg-buildpackage -us -uc -b
+      - run: cp ../fusectl_*.deb .
       - uses: actions/upload-artifact@v4
         with:
           name: deb-package
-          path: ../fusectl_*.deb
+          path: fusectl_*.deb
 
   build-flatpak:
     needs: test
