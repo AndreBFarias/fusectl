@@ -57,6 +57,21 @@ def test_install_readonly_files_renamed(cnx_package: Path, sd_card: Path) -> Non
     assert (sd_card / "atmosphere" / "package3.apg").is_file()
 
 
+def test_install_removes_stale_non_apg(cnx_package: Path, sd_card: Path) -> None:
+    """Arquivo atmosphere/package3 sem .apg deve ser removido antes de criar .apg."""
+    (cnx_package / "atmosphere" / "package3").write_bytes(b"\xFF" * 64)
+    stale = sd_card / "atmosphere" / "package3"
+    stale.write_bytes(b"\xAA" * 32)
+
+    errors = install(cnx_package, sd_card)
+    assert errors == []
+
+    apg = sd_card / "atmosphere" / "package3.apg"
+    assert apg.is_file()
+    assert apg.read_bytes() == b"\xFF" * 64
+    assert not stale.exists()
+
+
 def test_install_copy_error(cnx_package: Path, sd_card: Path) -> None:
     """Erros de cópia são acumulados sem interromper."""
     call_count = 0
