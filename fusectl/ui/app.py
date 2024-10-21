@@ -17,7 +17,7 @@ from fusectl.ui.screens.home import HomeScreen
 from fusectl.ui.screens.install import InstallScreen
 from fusectl.ui.screens.rcm import RCMScreen
 from fusectl.ui.screens.update import UpdateScreen
-from fusectl.ui.widgets import InfoPanel, Toolbar
+from fusectl.ui.widgets import InfoPanel, NavBar, Toolbar
 
 log = get_logger("ui.app")
 
@@ -283,6 +283,7 @@ class FuseCtlApp(App):
         self._sd_paths: list[Path] = []
 
     def compose(self) -> ComposeResult:
+        yield NavBar(id="navbar")
         yield Toolbar(id="toolbar")
         with ContentSwitcher(id="content", initial="view-home"):
             with VerticalScroll(id="view-home"):
@@ -307,7 +308,12 @@ class FuseCtlApp(App):
         self.query_one("#toolbar", Toolbar).set_context_label("Home")
 
     def _update_global_status(self, rcm_connected: bool) -> None:
-        pass
+        rcm_text = "conectado" if rcm_connected else "desconectado"
+        sd_text = self._sd_paths[0].name if self._sd_paths else "não detectado"
+        try:
+            self.query_one(NavBar).update_status(f"RCM: {rcm_text}  |  SD: {sd_text}")
+        except Exception as exc:
+            log.debug("Falha ao atualizar NavBar: %s", exc)
 
     def _poll_status(self) -> None:
         self._detect_package()

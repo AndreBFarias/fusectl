@@ -74,7 +74,11 @@ class RCMScreen(Vertical):
             return
         option_list = self.query_one("#payload-list", OptionList)
         prev_idx = option_list.highlighted
-        prev_name = self._payloads[prev_idx].name if prev_idx is not None and prev_idx < len(self._payloads) else None
+        prev_name = (
+            self._payloads[prev_idx].name
+            if prev_idx is not None and 0 <= prev_idx < len(self._payloads)
+            else None
+        )
 
         self._payloads = payloads
         option_list.clear_options()

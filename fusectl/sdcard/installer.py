@@ -87,6 +87,13 @@ def install(
         relative_str = str(relative)
         if relative_str in _READONLY_FILES:
             dst = sd_root / (relative_str + ".apg")
+            stale = sd_root / relative_str
+            if stale.exists():
+                try:
+                    stale.unlink()
+                    log.info("Removido arquivo stale: %s", stale)
+                except OSError as exc:
+                    log.warning("Falha ao remover arquivo stale %s: %s", stale, exc)
 
         dst.parent.mkdir(parents=True, exist_ok=True)
 

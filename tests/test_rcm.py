@@ -177,3 +177,34 @@ def test_inject_calls_switch_to_highbuf(
 
     trigger_args = mock_trigger.call_args[0]
     assert trigger_args[1] == 1
+
+
+def test_trigger_vulnerability_eperm_raises(mock_usb_device: MagicMock) -> None:
+    """EPERM deve ser relançado como RCMError — não engolido silenciosamente."""
+    import errno as errno_mod
+    from fusectl.rcm.injector import _trigger_vulnerability
+
+    err = OSError()
+    err.errno = errno_mod.EPERM
+    err.strerror = "Operation not permitted"
+
+    with patch("fcntl.ioctl", side_effect=err):
+        with patch("os.open", return_value=99):
+            with patch("os.close"):
+                with pytest.raises(RCMError, match="Operation not permitted"):
+                    _trigger_vulnerability(mock_usb_device, 1)
+
+
+def test_trigger_vulnerability_enodev_ok(mock_usb_device: MagicMock) -> None:
+    """ENODEV não deve lançar exceção — é o comportamento esperado após o smash."""
+    import errno as errno_mod
+    from fusectl.rcm.injector import _trigger_vulnerability
+
+    err = OSError()
+    err.errno = errno_mod.ENODEV
+    err.strerror = "No such device"
+
+    with patch("fcntl.ioctl", side_effect=err):
+        with patch("os.open", return_value=99):
+            with patch("os.close"):
+                _trigger_vulnerability(mock_usb_device, 1)

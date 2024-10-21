@@ -45,6 +45,24 @@ def test_update_force(cnx_package: Path, sd_card: Path) -> None:
     assert len(calls) > 0
 
 
+def test_remove_old_hekate_removes_all(tmp_path: Path) -> None:
+    """Todos os arquivos hekate_ctcaer_* devem ser removidos em uma passagem."""
+    from fusectl.sdcard.updater import _remove_old_hekate
+
+    sd = tmp_path / "sd"
+    sd.mkdir()
+    (sd / "hekate_ctcaer_5.9.0_ctcaer_0.6.5.bin").write_bytes(b"\x00")
+    (sd / "hekate_ctcaer_6.0.1_ctcaer_0.7.0.bin").write_bytes(b"\x00")
+    (sd / "hekate_ctcaer_6.1.0_ctcaer_0.8.0.bin").write_bytes(b"\x00")
+    (sd / "atmosphere").mkdir()
+
+    _remove_old_hekate(sd)
+
+    remaining = list(sd.iterdir())
+    assert len(remaining) == 1
+    assert remaining[0].name == "atmosphere"
+
+
 def test_update_clean_install_flag(cnx_package: Path, sd_card: Path) -> None:
     flag = sd_card / "cleaninstall.flag"
     flag.write_text("cnx-updater")
