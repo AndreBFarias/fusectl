@@ -715,3 +715,119 @@ class TestBotoesLimpar:
             assert app.query_one(InstallScreen).get_package_path() == ""
             assert app.query_one(UpdateScreen).get_package_path() == ""
             assert app.query_one(FirmwareScreen).get_firmware_path() == ""
+
+
+class TestSprint1FixesE2E:
+    """Testes E2E perspectiva do usuário para as correções do Sprint 1."""
+
+    @pytest.mark.asyncio
+    async def test_navbar_exibe_rcm_conectado(self) -> None:
+        """Bug 1: usuário vê 'RCM: conectado' na NavBar após polling com Switch conectado."""
+        from fusectl.ui.widgets import NavBar
+
+        app = FuseCtlApp()
+        async with app.run_test(size=(120, 40)) as pilot:
+            app._sd_paths = []
+            app._update_global_status(rcm_connected=True)
+
+            navbar = app.query_one(NavBar)
+            assert "conectado" in navbar._status_text
+
+    @pytest.mark.asyncio
+    async def test_navbar_exibe_rcm_desconectado(self) -> None:
+        """Bug 1: usuário vê 'RCM: desconectado' quando Switch não está em RCM."""
+        from fusectl.ui.widgets import NavBar
+
+        app = FuseCtlApp()
+        async with app.run_test(size=(120, 40)) as pilot:
+            app._sd_paths = []
+            app._update_global_status(rcm_connected=False)
+
+            navbar = app.query_one(NavBar)
+            assert "desconectado" in navbar._status_text
+
+    @pytest.mark.asyncio
+    async def test_navbar_exibe_nome_sd(self, tmp_path: Path) -> None:
+        """Bug 1: usuário vê o nome do ponto de montagem do SD na NavBar."""
+        from fusectl.ui.widgets import NavBar
+
+        sd = tmp_path / "meu_sd"
+        sd.mkdir()
+
+        app = FuseCtlApp()
+        async with app.run_test(size=(120, 40)) as pilot:
+            app._sd_paths = [sd]
+            app._update_global_status(rcm_connected=False)
+
+            navbar = app.query_one(NavBar)
+            assert "meu_sd" in navbar._status_text
+
+    @pytest.mark.asyncio
+    async def test_navbar_presente_na_tui(self) -> None:
+        """Bug 1: NavBar está presente no layout da TUI após a correção."""
+        from fusectl.ui.widgets import NavBar
+
+        app = FuseCtlApp()
+        async with app.run_test(size=(120, 40)) as pilot:
+            assert app.query_one(NavBar) is not None
+
+    @pytest.mark.asyncio
+    async def test_payload_selecao_sobrevive_refresh_polling(self) -> None:
+        """Bug 4: usuário seleciona payload, polling atualiza lista, seleção permanece."""
+        app = FuseCtlApp()
+        async with app.run_test(size=(120, 40)) as pilot:
+            rcm = app.query_one(RCMScreen)
+            payloads = [Path("/tmp/fusee.bin"), Path("/tmp/tegra.bin"), Path("/tmp/hekate.bin")]
+            rcm.update_payloads(payloads)
+
+            ol = rcm.query_one("#payload-list", OptionList)
+            ol.highlighted = 2
+            assert rcm.get_selected_payload() == Path("/tmp/hekate.bin")
+
+            # simula 3 ciclos de polling sem mudança na lista
+            rcm.update_payloads(payloads)
+            rcm.update_payloads(payloads)
+            rcm.update_payloads(payloads)
+
+            assert rcm.get_selected_payload() == Path("/tmp/hekate.bin")
+
+    @pytest.mark.asyncio
+    async def test_install_remove_stale_apg_visivel_no_sd(
+        self, cnx_package: Path, sd_card: Path
+    ) -> None:
+        """Bug 5: após instalar, usuário não tem package3 sem .apg coexistindo no SD."""
+        from fusectl.sdcard.installer import install
+
+        (cnx_package / "atmosphere" / "package3").write_bytes(b"\xDE\xAD\xBE\xEF" * 16)
+        stale = sd_card / "atmosphere" / "package3"
+        stale.write_bytes(b"\x00" * 64)
+
+        app = FuseCtlApp()
+        async with app.run_test(size=(120, 40)) as pilot:
+            screen = app.query_one(InstallScreen)
+            screen.set_package_path(str(cnx_package))
+            app._sd_paths = [sd_card]
+
+        # operação real de install (sem mock no shutil)
+        errors = install(cnx_package, sd_card)
+
+        assert errors == []
+        assert not stale.exists(), "package3 sem .apg não deve existir após install"
+        assert (sd_card / "atmosphere" / "package3.apg").is_file()
+
+    @pytest.mark.asyncio
+    async def test_update_remove_multiplos_hekate_antigos(
+        self, cnx_package: Path, sd_card: Path
+    ) -> None:
+        """Bug 3: após atualizar, usuário não tem NENHUM hekate_ctcaer_* antigo no SD."""
+        from fusectl.sdcard.updater import update
+
+        (sd_card / "hekate_ctcaer_5.9.0_ctcaer_0.6.5.bin").write_bytes(b"\x00")
+        (sd_card / "hekate_ctcaer_6.0.1_ctcaer_0.7.0.bin").write_bytes(b"\x00")
+        (sd_card / "hekate_ctcaer_6.1.0_ctcaer_0.8.0.bin").write_bytes(b"\x00")
+
+        errors = update(cnx_package, sd_card)
+
+        assert errors == []
+        hekate_stale = list(sd_card.glob("hekate_ctcaer_*.bin"))
+        assert hekate_stale == [], f"Encontrado hekate antigo: {hekate_stale}"
