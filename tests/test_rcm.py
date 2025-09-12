@@ -188,11 +188,12 @@ def test_trigger_vulnerability_eperm_raises(mock_usb_device: MagicMock) -> None:
     err.errno = errno_mod.EPERM
     err.strerror = "Operation not permitted"
 
-    with patch("fcntl.ioctl", side_effect=err):
-        with patch("os.open", return_value=99):
-            with patch("os.close"):
-                with pytest.raises(RCMError, match="Operation not permitted"):
-                    _trigger_vulnerability(mock_usb_device, 1)
+    with patch("fusectl.rcm.injector._validate_xhci"):
+        with patch("fcntl.ioctl", side_effect=err):
+            with patch("os.open", return_value=99):
+                with patch("os.close"):
+                    with pytest.raises(RCMError, match="Operation not permitted"):
+                        _trigger_vulnerability(mock_usb_device, 1)
 
 
 def test_trigger_vulnerability_enodev_ok(mock_usb_device: MagicMock) -> None:
@@ -204,7 +205,8 @@ def test_trigger_vulnerability_enodev_ok(mock_usb_device: MagicMock) -> None:
     err.errno = errno_mod.ENODEV
     err.strerror = "No such device"
 
-    with patch("fcntl.ioctl", side_effect=err):
-        with patch("os.open", return_value=99):
-            with patch("os.close"):
-                _trigger_vulnerability(mock_usb_device, 1)
+    with patch("fusectl.rcm.injector._validate_xhci"):
+        with patch("fcntl.ioctl", side_effect=err):
+            with patch("os.open", return_value=99):
+                with patch("os.close"):
+                    _trigger_vulnerability(mock_usb_device, 1)
