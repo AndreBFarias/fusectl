@@ -79,7 +79,10 @@ O Flatpak roda em sandbox. A regra udev precisa ser instalada manualmente no hos
 ./run.sh
 ```
 
-Abre a interface com 5 seções: Home, RCM, Instalar, Atualizar, Firmware.
+Abre a interface com 2 telas navegáveis via Toolbar:
+
+- **Home** — status do sistema (RCM, SD, versões, espaço livre) + botões de ação
+- **Operações** — rolagem vertical com RCM, Instalar, Atualizar e Firmware em sequência
 
 **Atalhos:**
 
@@ -126,10 +129,10 @@ fusectl sd-detect
 1. Switch: segurar Volume+ e pressionar Power → modo RCM
 2. Conectar Switch ao PC via USB-C → USB-A (direto, sem hub)
 3. ./run.sh → TUI detecta Switch em RCM e SD montado
-4. Aba RCM → selecionar payload (fusee.bin) → Injetar → Switch inicia Hekate
+4. Botão "Iniciar" → tela de Operações → seção RCM → selecionar payload (fusee.bin) → Injetar → Switch inicia Hekate
 5. No Hekate: Tools → USB Tools → SD Card → Mount (monta SD via USB)
 6. TUI detecta SD montado e exibe espaço livre
-7. Aba Instalar (primeira vez) ou Atualizar → confirmar → aguardar cópia
+7. Seção Instalar (primeira vez) ou Atualizar → confirmar → aguardar cópia
 ```
 
 ---
@@ -161,11 +164,11 @@ fusectl/                     Pacote principal Python
     ├── app.py               FuseCtlApp — app principal, polling, roteamento de eventos
     ├── widgets.py           NavBar, Toolbar, StatusIndicator, InfoPanel, Banner
     └── screens/
-        ├── home.py          Aba Home (status geral, espaço livre SD)
-        ├── rcm.py           Aba RCM (lista de payloads, injeção)
-        ├── install.py       Aba Instalar
-        ├── update.py        Aba Atualizar (diff de versão)
-        ├── firmware.py      Aba Firmware
+        ├── home.py          Tela Home (status geral, espaço livre SD)
+        ├── rcm.py           Seção RCM (lista de payloads, injeção)
+        ├── install.py       Seção Instalar
+        ├── update.py        Seção Atualizar (diff de versão)
+        ├── firmware.py      Seção Firmware
         ├── confirm.py       Dialog de confirmação antes de operações destrutivas
         └── file_picker.py   Seletor de arquivo (browser de diretório)
 

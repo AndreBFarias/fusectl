@@ -42,7 +42,7 @@ Versão: [SemVer](https://semver.org/lang/pt-BR/).
 
 ### Adicionado
 - Injeção de payload RCM via USB (CVE-2018-6242, Tegra X1 Erista)
-- Interface TUI com tema Dracula: abas Home, RCM, Instalar, Atualizar, Firmware
+- Interface TUI com tema Dracula: tela Home + tela de Operações (RCM, Instalar, Atualizar, Firmware em rolagem)
 - CLI completa: `fusectl rcm inject`, `fusectl install`, `fusectl update`,
   `fusectl firmware`, `fusectl sd-detect`, `fusectl version`, `fusectl payloads`
 - Detecção automática de SD montado (FAT32/exFAT em /media, /mnt, /run/media)
