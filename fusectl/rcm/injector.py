@@ -122,7 +122,7 @@ def _build_payload(payload_data: bytes) -> bytes:
         0x0004: NOP sled (676 bytes de zeros = ANDEQ condicionais ARM)
         0x02A8: Intermezzo relocator (124 bytes)
         0x0324: Padding zeros (3524 bytes)
-        0x10E8: User payload parte 1 (ate 0x4000 bytes)
+        0x10E8: User payload parte 1 (até 0x4000 bytes)
         0x50E8: Stack spray (0x40010000 repetido 2160x)
         0x72A8: User payload parte 2 (restante)
         Final:  Alinhado a 0x1000

@@ -675,10 +675,10 @@ class FuseCtlApp(App):
             )
             if errors:
                 self.call_from_thread(
-                    screen.set_status, f"{len(errors)} erro(s) durante copia", False
+                    screen.set_status, f"{len(errors)} erro(s) durante cópia", False
                 )
                 self.call_from_thread(
-                    self.notify, f"{len(errors)} erro(s) durante copia de firmware", severity="error"
+                    self.notify, f"{len(errors)} erro(s) durante cópia de firmware", severity="error"
                 )
             else:
                 self.call_from_thread(screen.set_status, "Firmware copiado")

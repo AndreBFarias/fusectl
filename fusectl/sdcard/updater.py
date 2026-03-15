@@ -133,7 +133,7 @@ def _check_clean_install(sd_root: Path) -> bool:
 
 
 def _cleanup_clean_install_flag(sd_root: Path) -> None:
-    """Remove flag de clean install apos atualização."""
+    """Remove flag de clean install após atualização."""
     flag = sd_root / CLEAN_INSTALL_FLAG
     if flag.is_file():
         try:

@@ -49,7 +49,7 @@ def test_install_progress_callback(cnx_package: Path, sd_card: Path) -> None:
 
 
 def test_install_readonly_files_renamed(cnx_package: Path, sd_card: Path) -> None:
-    """Arquivos em _READONLY_FILES sao renomeados para .apg."""
+    """Arquivos em _READONLY_FILES são renomeados para .apg."""
     (cnx_package / "atmosphere" / "package3").write_bytes(b"\xFF" * 64)
 
     errors = install(cnx_package, sd_card)
@@ -58,7 +58,7 @@ def test_install_readonly_files_renamed(cnx_package: Path, sd_card: Path) -> Non
 
 
 def test_install_copy_error(cnx_package: Path, sd_card: Path) -> None:
-    """Erros de copia sao acumulados sem interromper."""
+    """Erros de cópia são acumulados sem interromper."""
     call_count = 0
     original_copy2 = shutil.copy2
 
