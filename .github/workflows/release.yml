@@ -1,0 +1,103 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -e ".[dev]" || pip install -e . && pip install pytest pytest-cov
+      - run: python -m pytest tests/ -v
+
+  build-deb:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y debhelper dh-python python3-all python3-venv python3-pip
+      - run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          sed -i "s/fusectl (0.1.0-1)/fusectl (${VERSION})/" packaging/debian/changelog
+      - run: ln -s packaging/debian debian
+      - run: dpkg-buildpackage -us -uc -b
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deb-package
+          path: ../fusectl_*.deb
+
+  build-flatpak:
+    needs: test
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:freedesktop-24.08
+    steps:
+      - uses: actions/checkout@v4
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          manifest-path: packaging/flatpak/com.github.fusectl.fusectl.yml
+          bundle: fusectl.flatpak
+
+  build-appimage:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          APPDIR=AppDir
+          SITE_PACKAGES="$APPDIR/usr/lib/python3.12/site-packages"
+          mkdir -p "$SITE_PACKAGES" "$APPDIR/usr/bin" \
+                   "$APPDIR/usr/share/applications" \
+                   "$APPDIR/usr/share/icons/hicolor/256x256/apps" \
+                   "$APPDIR/usr/share/metainfo"
+
+          pip install --target="$SITE_PACKAGES" .
+
+          cp packaging/appimage/AppRun "$APPDIR/"
+          chmod +x "$APPDIR/AppRun"
+
+          sed 's/Exec=fusectl-launcher/Exec=fusectl/' \
+              packaging/fusectl.desktop > "$APPDIR/fusectl.desktop"
+          cp "$APPDIR/fusectl.desktop" "$APPDIR/usr/share/applications/"
+
+          cp assets/logo.png "$APPDIR/fusectl.png"
+          cp assets/logo.png "$APPDIR/usr/share/icons/hicolor/256x256/apps/fusectl.png"
+
+          cp packaging/appimage/fusectl.appdata.xml "$APPDIR/usr/share/metainfo/"
+      - run: |
+          curl -sSL -o appimagetool \
+              "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
+          chmod +x appimagetool
+          ARCH=x86_64 ./appimagetool --appimage-extract > /dev/null 2>&1
+          ARCH=x86_64 ./squashfs-root/AppRun --no-appstream AppDir fusectl-x86_64.AppImage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: appimage
+          path: fusectl-*.AppImage
+
+  release:
+    needs: [build-deb, build-flatpak, build-appimage]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            deb-package/*.deb
+            flatpak/*.flatpak
+            appimage/*.AppImage
+          generate_release_notes: true

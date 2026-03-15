@@ -1,0 +1,5 @@
+Gerar icones a partir de assets/logo.png:
+
+convert ../assets/logo.png -resize 48x48 fusectl-48.png
+convert ../assets/logo.png -resize 128x128 fusectl-128.png
+convert ../assets/logo.png -resize 256x256 fusectl-256.png

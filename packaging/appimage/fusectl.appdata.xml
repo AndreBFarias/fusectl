@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.fusectl.fusectl</id>
+  <name>fusectl</name>
+  <summary>Gerenciador Linux para CFW Nintendo Switch</summary>
+  <metadata_license>GPL-3.0-or-later</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <description>
+    <p>
+      Ferramenta para gerenciar Custom Firmware em Nintendo Switch
+      (Tegra X1 Erista) via Linux. Interface TUI e CLI para
+      injeção de payload RCM, instalação de pacotes CFW e cópia de firmware.
+    </p>
+  </description>
+  <releases>
+    <release version="0.1.0" date="2026-03-14"/>
+  </releases>
+</component>

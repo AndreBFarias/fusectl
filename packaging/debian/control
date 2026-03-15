@@ -1,0 +1,15 @@
+Source: fusectl
+Section: utils
+Priority: optional
+Maintainer: fusectl contributors
+Build-Depends: debhelper-compat (= 13), python3 (>= 3.10), python3-venv, python3-pip, dh-python
+Standards-Version: 4.6.2
+
+Package: fusectl
+Architecture: all
+Depends: python3 (>= 3.10), python3-venv, libusb-1.0-0, ${misc:Depends}
+Description: Gerenciador Linux para CFW Nintendo Switch
+ Ferramenta para gerenciar Custom Firmware em Nintendo Switch
+ (Tegra X1 Erista) via Linux. Oferece interface TUI e CLI para
+ injeção de payload RCM, instalação e atualização de pacotes CFW,
+ e cópia de firmware.

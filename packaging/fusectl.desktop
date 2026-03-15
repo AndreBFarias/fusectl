@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=fusectl
+GenericName=Gerenciador de CFW Nintendo Switch
+Comment=Gerenciador Linux para Custom Firmware Nintendo Switch
+Exec=fusectl-launcher
+Icon=fusectl
+Terminal=true
+Categories=Utility;System;
+Keywords=Nintendo;Switch;CFW;RCM;
