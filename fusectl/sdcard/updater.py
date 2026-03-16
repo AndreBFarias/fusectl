@@ -69,6 +69,13 @@ def update(
         relative_str = str(relative)
         if relative_str in _READONLY_FILES:
             dst = sd_root / (relative_str + ".apg")
+            stale = sd_root / relative_str
+            if stale.exists():
+                try:
+                    stale.unlink()
+                    log.info("Removido arquivo stale: %s", stale)
+                except OSError as exc:
+                    log.warning("Falha ao remover arquivo stale %s: %s", stale, exc)
 
         dst.parent.mkdir(parents=True, exist_ok=True)
 
@@ -111,7 +118,7 @@ def _remove_sysmodule_flags(sd_root: Path) -> None:
 def _remove_old_hekate(sd_root: Path) -> None:
     """Remove binários hekate_ctcaer antigos da raiz do SD."""
     count = 0
-    for entry in sd_root.iterdir():
+    for entry in list(sd_root.iterdir()):
         if entry.is_file() and entry.name.startswith("hekate_ctcaer_"):
             try:
                 entry.unlink()

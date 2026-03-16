@@ -11,6 +11,7 @@ Baseado no trabalho de Kate Temkin / ReSwitched (fusee-launcher).
 """
 
 import ctypes
+import errno
 import fcntl
 import os
 import struct
@@ -248,8 +249,12 @@ def _trigger_vulnerability(device: usb.core.Device, current_buffer: int) -> None
     fd = os.open(dev_path, os.O_RDWR)
     try:
         fcntl.ioctl(fd, ioctl_number, request, True)
-    except OSError:
-        pass
+    except OSError as exc:
+        if exc.errno == errno.ENODEV:
+            log.debug("ENODEV após ioctl: smash bem-sucedido (esperado)")
+        else:
+            log.error("Falha no ioctl USBDEVFS_SUBMITURB: errno=%d (%s)", exc.errno, exc.strerror)
+            raise RCMError(f"Falha ao acionar vulnerabilidade: {exc.strerror} (errno {exc.errno})") from exc
     finally:
         os.close(fd)
 
