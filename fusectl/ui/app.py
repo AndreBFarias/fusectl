@@ -87,7 +87,6 @@ Toolbar Button:hover {
 }
 
 #home-buttons Button {
-    border: round $purple;
     margin: 0 2;
 }
 
@@ -253,7 +252,6 @@ Label {
 }
 
 .rcm-buttons Button, .btn-row Button {
-    border: round $purple;
     margin: 0 1;
 }
 
