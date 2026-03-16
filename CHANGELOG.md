@@ -9,6 +9,10 @@ Versão: [SemVer](https://semver.org/lang/pt-BR/).
 
 ## [Não lançado]
 
+---
+
+## [0.1.1] — 2026-03-16
+
 ### Corrigido
 - `_update_global_status()` implementado: NavBar exibe status real de RCM e SD
   após cada ciclo de polling (`fusectl/ui/app.py`)
@@ -24,9 +28,13 @@ Versão: [SemVer](https://semver.org/lang/pt-BR/).
   criar a versão `.apg` para `_READONLY_FILES`, evitando coexistência de
   `package3` e `package3.apg` no SD (`fusectl/sdcard/installer.py`,
   `fusectl/sdcard/updater.py`)
+- Bordas circulares internas removidas dos botões de conteúdo (`fusectl/ui/app.py`)
 
 ### Testes
-- 4 testes de regressão adicionados cobrindo os bugs acima (total: 132 testes)
+- 11 testes de regressão adicionados cobrindo os bugs acima (total: 139 testes)
+
+### Documentação
+- README reescrito com golden path completo: arquitetura, fluxos, setup dev, CI/CD
 
 ---
 
