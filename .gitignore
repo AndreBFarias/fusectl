@@ -20,6 +20,8 @@ logs/
 .DS_Store
 Thumbs.db
 
+.worktrees/
+
 dist/
 build/
 *.egg-info/
