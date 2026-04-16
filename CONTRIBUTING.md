@@ -1,6 +1,20 @@
-# Contribuindo
+# Como Contribuir
 
-## Início Rápido
+Obrigado pelo interesse em contribuir com o fusectl!
+
+## Código de Conduta
+
+Este projeto adota o [Contributor Covenant v2.1](CODE_OF_CONDUCT.md). Ao participar, você concorda em respeitá-lo.
+
+## Configurando o Ambiente
+
+### Requisitos
+
+- Python 3.10+
+- Linux (acesso USB requer udev rules)
+- Nintendo Switch Erista (opcional, para testes com hardware real)
+
+### Instalação
 
 ```bash
 git clone https://github.com/AndreBFarias/fusectl.git
@@ -8,18 +22,54 @@ cd fusectl
 ./install.sh
 ```
 
-## Como Contribuir
+### Testes
 
-1. Faça um fork do projeto.
-2. Crie uma branch para sua feature (`git checkout -b feature/nome`).
-3. Implemente e teste com `make test`.
-4. Commit com mensagem descritiva (`git commit -m 'feat: descrição'`).
-5. Push e abra um Pull Request.
+```bash
+pytest tests/ -v
+pytest tests/ -v --cov=fusectl
+```
 
-## Checklist
+## Padrões de Código
 
-- [ ] Fork e branch criados
-- [ ] Testes passando
-- [ ] Sem regressões no polling de dispositivos USB
-- [ ] Regras udev testadas (se aplicável)
-- [ ] PR com descrição clara da mudança
+### Lint
+
+O projeto usa `ruff` para lint e formatação. Verifique antes de commitar:
+
+```bash
+ruff check fusectl/ tests/
+ruff format fusectl/ tests/
+```
+
+### Commits
+
+Mensagens em português, formato convencional:
+
+```
+tipo: descrição imperativa em PT-BR
+
+# Tipos: feat, fix, refactor, docs, test, perf, chore
+```
+
+## Regras do Projeto
+
+- **Zero emojis** em código, commits e documentação
+- **Acentuação correta** obrigatória em todo texto PT-BR
+- **Type hints** em todas as funções novas
+- **Sem polling USB em testes** -- mockar dispositivos para CI
+- **Regras udev** testadas antes de submeter mudanças
+
+## Submetendo Mudanças
+
+### Antes de Abrir o PR
+
+- [ ] `pytest tests/ -v` passando (139+ testes)
+- [ ] `ruff check` e `ruff format --check` passando
+- [ ] Zero emojis no código e commits
+- [ ] Acentuação correta em textos PT-BR
+- [ ] Documentação atualizada (se aplicável)
+
+### Processo de Review
+
+1. Um mantenedor vai revisar seu PR
+2. Pode haver solicitações de mudanças
+3. Após aprovação, o PR será mergeado
