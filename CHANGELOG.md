@@ -7,7 +7,19 @@ Versão: [SemVer](https://semver.org/lang/pt-BR/).
 
 ---
 
-## [Não lançado]
+## [0.1.3] - 2026-04-15
+
+### Adicionado
+- Código de Conduta (Contributor Covenant v2.1)
+- Política de Segurança (SECURITY.md)
+- Guia de contribuição expandido
+- Templates de issue (bug, feature request) e PR para GitHub
+- Workflow CI (lint + testes em push/PR)
+- .mailmap para unificação de identidade git
+- Badge CI no README
+
+### Corrigido
+- pyproject.toml modernizado com authors, keywords e URLs
 
 ---
 

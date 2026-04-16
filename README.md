@@ -1,5 +1,7 @@
 # fusectl
 
+[![CI](https://github.com/AndreBFarias/fusectl/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreBFarias/fusectl/actions/workflows/ci.yml)
+
 Gerenciador Linux para Custom Firmware Nintendo Switch (Tegra X1 — Erista).
 
 Compatível com qualquer all-in-one pack de CFW (Atmosphere, Hekate, CNX, Kefir, DeepSea, etc.).

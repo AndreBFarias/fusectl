@@ -4,10 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fusectl"
-version = "0.1.1"
+version = "0.1.3"
 description = "Gerenciador Linux para Custom Firmware Nintendo Switch"
+readme = "README.md"
 requires-python = ">=3.10"
 license = "GPL-3.0-or-later"
+authors = [{name = "AndreBFarias"}]
+keywords = ["nintendo", "switch", "cfw", "rcm", "tegra", "linux"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -25,6 +28,12 @@ dependencies = [
     "textual>=0.40.0",
     "rich>=13.0.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/AndreBFarias/fusectl"
+Repository = "https://github.com/AndreBFarias/fusectl"
+"Bug Tracker" = "https://github.com/AndreBFarias/fusectl/issues"
+Changelog = "https://github.com/AndreBFarias/fusectl/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [
